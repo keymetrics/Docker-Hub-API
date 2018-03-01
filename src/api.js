@@ -126,6 +126,36 @@
             }.bind(this));
         },
         /**
+         * Adds a collaborator to a group.
+         *
+         * @param {String} org - the username to add a collaborator to
+         * @param {String} group - the name of the repository to add a collaborator to
+         * @param {String} collaborator - the username of the collaborator to add
+         * @returns {Promise}
+         */
+        addCollaboratorToGroup: function (org, group, collaborator) {
+          return new Promise(function (resolve, reject) {
+              if (!org || typeof org !== 'string') {
+                  return reject(new Error('Username must be provided!'));
+              }
+
+              if (!group || typeof group !== 'string') {
+                  return reject(new Error('Repository name must be provided!'));
+              }
+
+              if (!collaborator || typeof collaborator !== 'string') {
+                  return reject(new Error('Collaborator username must be provided!'));
+              }
+
+              // Make sure the username/collaborator is all lowercase as per Docker Hub requirements
+              org = org.toLowerCase();
+              collaborator = collaborator.toLowerCase();
+              group = group.toLowerCase();
+
+              this.makePostRequest(`orgs/${org}/groups/${group}/members/`, {member: collaborator}).then(resolve).catch(reject);
+          }.bind(this));
+      },
+        /**
          * Gets the details for a given build of a repository.
          *
          * @param {String} username - the username to get the comments for
